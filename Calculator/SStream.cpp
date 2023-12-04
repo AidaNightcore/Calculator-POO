@@ -1,81 +1,62 @@
 #include "SStream.h"
-#include <cctype>  // for isdigit
-#include <cstring> // for strlen
-using namespace std; 
-sstream::sstream(const char* str) : buffer(nullptr), size(strlen(str)), position(0) {
-    buffer = new char[size + 1];  // +1 for null terminator
-    strcpy(buffer, str);
-}
 
-sstream::~sstream() {
-    delete[] buffer;
+MySStream::MySStream(const char* str) : internalString(str) {
+    refillStack();
 }
 
 template <typename T>
-sstream& sstream::operator>>(T& value) {
+MySStream& MySStream::operator>>(T& value) {
+    if (charStack.empty()) {
+        return *this;
+    }
+
+    // Extract a numeric value
+    bool isNegative = false;
+    if (charStack.top() == '-') {
+        isNegative = true;
+        charStack.pop();
+    }
+
+    // Extract integer part
     value = 0;
-
-    while (position < size && isWhitespace(buffer[position])) {
-        position++;
+    while (!charStack.empty() && isDigitChar(charStack.top())) {
+        value = value * 10 + (charStack.top() - '0');
+        charStack.pop();
     }
 
-    int sign = 1;
-    if (position < size && buffer[position] == '-') {
-        sign = -1;
-        position++;
+    // Handle fractional part for float
+    if (!charStack.empty() && charStack.top() == '.') {
+        charStack.pop();
+        double fractionalPart = 0.1;  // Starting with 0.1 for the first decimal place
+        while (!charStack.empty() && isDigitChar(charStack.top())) {
+            value += fractionalPart * (charStack.top() - '0');
+            fractionalPart /= 10.0;
+            charStack.pop();
+        }
     }
 
-    while (position < size && isdigit(buffer[position])) {
-        value = value * 10 + (buffer[position] - '0');
-        position++;
+    if (isNegative) {
+        value = -value;
     }
-
-    value *= sign;
 
     return *this;
 }
 
-const char* sstream::str() const {
-    return buffer;
+MySStream::operator bool() const {
+    return !charStack.empty();
 }
 
-bool sstream::isWhitespace(char c) const {
-    return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+bool MySStream::empty() const {
+    return !static_cast<bool>(*this);
 }
-template <typename T>
-sstream& sstream::operator>>(T& value) {
-    
-    float result = 0;
-    while (buffer[position] >= '0' && buffer[position] <= '9') {
-        result = result * 10 + (buffer[position] - '0');
-        ++position;
+
+void MySStream::refillStack() {
+    while (*internalString != '\0') {
+        charStack.push(*internalString);
+        ++internalString;
     }
-    value = static_cast<T>(result);
-    return *this;
 }
 
-template <typename T>
-sstream& sstream::operator<<(const T& value) {
-    
-    float temp = static_cast<float>(value);
-    int digits = 0;
-    while (temp > 0) {
-        temp /= 10;
-        ++digits;
-    }
-
-    temp = static_cast<int>(value);
-    for (int i = digits - 1; i >= 0; --i) {
-        buffer[position + i] = '0' + temp % 10;
-        temp /= 10;
-    }
-
-    position += digits;
-    return *this;
+bool MySStream::isDigitChar(char c) const {
+    return '0' <= c && c <= '9';
 }
-
-const char* sstream::str() const {
-    return &buffer[position];
-}
-
-// Explicit instantiation of the template functions for int

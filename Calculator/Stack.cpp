@@ -1,4 +1,4 @@
-#include "Stack.h";
+#include "Stack.h"
 template <typename T>
 stack<T>::stack(size_t initialCapacity) : elements(new T[initialCapacity]), capacity(initialCapacity), size(0) {}
 
@@ -23,7 +23,8 @@ template <typename T> T& stack<T>::top() {
 	if (!empty()) {
 		return elements[size - 1];
 	}
-	throw out_of_range("Stack is empty");
+	/*throw out_of_range("Stack is empty");*/
+	/*cout << "Stack is empty"; */
 }
 
 template <typename T> bool stack<T>::empty() const {
@@ -35,9 +36,12 @@ template <typename T> size_t stack<T>::getSize() const {
 }
 
 template <typename T> void stack<T>::resize() {
+	size_t newCapacity; 
 	if (capacity == 0)
-		size_t newCapacity = 1;
-	else size_t newCapacity = capacity * 2;
+		newCapacity = 1;
+	else
+		newCapacity = capacity * 2;
+
 
 	T* newElements = new T[newCapacity];
 
@@ -49,3 +53,4 @@ template <typename T> void stack<T>::resize() {
 	elements = newElements;
 	capacity = newCapacity;
 }
+

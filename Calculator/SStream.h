@@ -1,23 +1,25 @@
 #pragma once
-
-class sstream {
+#ifndef MYSSTREAM_H
+#define MYSSTREAM_H
+#include <iostream>
+#include "Stack.h"
+using namespace std; 
+class MySStream {
 public:
-    sstream(const char* str);
-    ~sstream();
+    MySStream(const char* str);
 
     template <typename T>
-    sstream& operator>>(T& value);
-    template <typename T>
-    sstream& operator<<(const T& value);
-    const char* str() const;
+    MySStream& operator>>(T& value);
+
+    explicit operator bool() const;
+    bool empty() const;
 
 private:
-    char* buffer;
-    size_t size;
-    size_t position; 
+    const char* internalString;
+    stack<char> charStack;
 
-    bool isWhitespace(char c) const; 
+    void refillStack();
+    bool isDigitChar(char c) const;
 };
 
-#include "SStream.cpp";
-
+#endif // MYSSTREAM_H

@@ -1,6 +1,8 @@
 #pragma once
+#ifndef STACK_H
+#define STACK_H
 #include <stdexcept>
-
+#include <iostream>
 template <typename T>
 class stack {
 private:
@@ -21,4 +23,4 @@ public:
 private:
 	void resize();
 };
-#include "Stack.cpp"; 
+#endif // STACK_H

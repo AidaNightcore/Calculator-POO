@@ -1,4 +1,4 @@
-// RPNConverter.cpp
+
 #include "RPNConverter.h"
 
 RPNConverter::RPNConverter() {}
@@ -8,12 +8,13 @@ RPNConverter::~RPNConverter() {}
 stack<string> RPNConverter::convertToRPN(const string& infixExpression) {
     stack<string> resultStack;
     stack<char> operatorStack;
-    sstream sstream(infixExpression);
+
+    MySStream MySStream(infixExpression.c_str());
 
     string token;
-    while (sstream >> token) {
+    while (MySStream >> token) {
         if (!token.empty()) {  // Ensure the token is not empty
-            if (isdigit(token[0]) || (token.size() > 1 && token[0] == '-' && isdigit(token[1]))) {
+            if (isDigit(token[0]) || (token.size() > 1 && token[0] == '-' && isDigit(token[1]))) {
                 // Operand, push to result stack
                 resultStack.push(token);
             }
@@ -59,13 +60,16 @@ int RPNConverter::getPrecedence(char op) {
     else if (op == '*' || op == '/') {
         return 2;
     }
+    else if (op == '#' || op == '^') {
+        return 3; 
+    }
     else {
         return 0; // Assuming other operators have lower precedence
     }
 }
 
 bool RPNConverter::isOperator(char c) {
-    return c == '+' || c == '-' || c == '*' || c == '/';
+    return c == '+' || c == '-' || c == '*' || c == '/' || c == '^'|| c=='#';
 }
 
 bool RPNConverter::isOpeningBracket(char c) {
@@ -81,4 +85,7 @@ bool RPNConverter::isHigherPrecedence(char op1, char op2) {
     int precedence2 = getPrecedence(op2);
 
     return precedence1 >= precedence2;
+}
+bool RPNConverter::isDigit(char c) {
+    return '0' <= c && c <= '9';
 }
