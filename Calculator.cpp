@@ -15,13 +15,21 @@ void Calculator::run() {
                 break;
             }
 
-             //Convert to RPN using RPNConverter
+            // Convert to RPN using RPNConverter
             stack<string> rpnStack = rpnConverter.convertToRPN(infixExpression);
 
-            //Set RPN stack in RPNEvaluator
+            // Print the RPN expression for debugging
+            cout << "RPN Expression: ";
+            while (!rpnStack.empty()) {
+                cout << rpnStack.top() << " ";
+                rpnStack.pop();
+            }
+            cout << endl;
+
+            // Set RPN stack in RPNEvaluator
             rpnEvaluator.setRPNStack(rpnStack);
 
-            //// Evaluate and display the result
+            // Evaluate and display the result
             double result = rpnEvaluator.evaluate();
             cout << "Result: " << result << endl;
         }

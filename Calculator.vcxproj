@@ -132,7 +132,7 @@
     <ClCompile Include="RPNConverter.cpp" />
     <ClCompile Include="RPNEvaluator.cpp" />
     <ClCompile Include="SStream.cpp" />
-    <ClCompile Include="Stack.cpp" />
+    <!-- <ClCompile Include="Stack.cpp" /> -->
     <ClCompile Include="Stack.h" />
   </ItemGroup>
   <ItemGroup>

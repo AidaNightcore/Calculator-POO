@@ -2,7 +2,7 @@
 
 RPNEvaluator::RPNEvaluator() {}
 
-RPNEvaluator::RPNEvaluator(const stack<string>& rpnStack) : rpnStack(rpnStack) {}
+RPNEvaluator::RPNEvaluator(const stack<std::string>& rpnStack) : rpnStack(rpnStack) {}
 
 RPNEvaluator::~RPNEvaluator() {}
 
@@ -10,7 +10,7 @@ float RPNEvaluator::evaluate() {
     stack<float> resultStack;
 
     while (!rpnStack.empty()) {
-        string token = rpnStack.top();
+        std::string token = rpnStack.top();
         rpnStack.pop();
 
         if (isDigit(token[0]) || (token.size() > 1 && token[0] == '-' && isDigit(token[1]))) {
@@ -47,7 +47,7 @@ float RPNEvaluator::evaluate() {
 bool RPNEvaluator::isDigit(char c) {
     return '0' <= c && c <= '9';
 }
-void RPNEvaluator::setRPNStack(const stack<string>& rpnStack) {
+void RPNEvaluator::setRPNStack(const stack<std::string>& rpnStack) {
     this->rpnStack = rpnStack;
 }
 

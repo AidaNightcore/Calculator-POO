@@ -1,62 +1,72 @@
 #pragma once
 #ifndef MYSSTREAM_H
 #define MYSSTREAM_H
+
+#include <string>
 #include <iostream>
-#include "Stack.h"
-using namespace std; 
+using namespace std;
+
 class MySStream {
 public:
     MySStream(const char* str);
 
-    template <typename T>
-    MySStream& operator>>(T& value);
+    // Read string from MySStream
+    MySStream& operator>>(string& str);
+
+    // Read integer from MySStream
+    MySStream& operator>>(int& num);
+
+    // Read float from MySStream
+    MySStream& operator>>(float& num);
 
     explicit operator bool() const;
-    bool empty() const;
 
 private:
-    const char* internalString;
-    stack<char> charStack;
-
-    void refillStack();
-    bool isDigitChar(char c) const;
+    const char* data;
 };
 
-template <typename T>
-MySStream& MySStream::operator>>(T& value) {
-    if (charStack.empty()) {
-        return *this;
+inline MySStream::MySStream(const char* str) : data(str) {}
+
+inline MySStream& MySStream::operator>>(string& str) {
+    // Read characters until a space is encountered
+    while (*data != '\0' && *data != ' ' && *data != '\t' && *data != '\n') {
+        str += *data;
+        ++data;
     }
 
-    // Extract a numeric value
-    bool isNegative = false;
-    if (charStack.top() == '-') {
-        isNegative = true;
-        charStack.pop();
-    }
-
-    // Extract integer part
-    value = 0;
-    while (!charStack.empty() && isDigitChar(charStack.top())) {
-        value = value * 10 + (charStack.top() - '0');
-        charStack.pop();
-    }
-
-    // Handle fractional part for float
-    if (!charStack.empty() && charStack.top() == '.') {
-        charStack.pop();
-        double fractionalPart = 0.1;  // Starting with 0.1 for the first decimal place
-        while (!charStack.empty() && isDigitChar(charStack.top())) {
-            value += fractionalPart * (charStack.top() - '0');
-            fractionalPart /= 10.0;
-            charStack.pop();
-        }
-    }
-
-    if (isNegative) {
-        value = -value;
+    // Skip whitespace characters
+    while (*data == ' ' || *data == '\t' || *data == '\n') {
+        ++data;
     }
 
     return *this;
 }
+
+inline MySStream& MySStream::operator>>(int& num) {
+    // Read integer using the stoi function
+    string str;
+    *this >> str;
+
+    // Convert string to integer
+    num = stoi(str);
+
+    return *this;
+}
+
+inline MySStream& MySStream::operator>>(float& num) {
+    // Read float using the stof function
+    string str;
+    *this >> str;
+
+    // Convert string to float
+    num = stof(str);
+
+    return *this;
+}
+
+inline MySStream::operator bool() const {
+    // Return true if the stream is not at the end
+    return *data != '\0';
+}
+
 #endif // MYSSTREAM_H

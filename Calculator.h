@@ -4,6 +4,7 @@
 #include "RPNConverter.h"
 #include "RPNEvaluator.h"
 
+
 class Calculator {
 public:
     Calculator();
@@ -12,10 +13,10 @@ public:
     void run();
 
     // Overload << operator for output
-    friend std::ostream& operator<<(std::ostream& os, const Calculator& calculator);
+    friend ostream& operator<<(ostream& os, const Calculator& calculator);
 
     // Overload >> operator for input
-    friend std::istream& operator>>(std::istream& is, Calculator& calculator);
+    friend istream& operator>>(istream& is, Calculator& calculator);
 
 private:
     RPNConverter rpnConverter;

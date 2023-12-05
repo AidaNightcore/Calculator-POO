@@ -9,28 +9,43 @@ stack<string> RPNConverter::convertToRPN(const string& infixExpression) {
     stack<string> resultStack;
     stack<char> operatorStack;
 
-    MySStream MySStream(infixExpression.c_str());
+    MySStream mySStream(infixExpression.c_str());
 
     string token;
-    while (MySStream >> token) {
-        if (!token.empty()) {  // Ensure the token is not empty
-            if (isDigit(token[0]) || (token.size() > 1 && token[0] == '-' && isDigit(token[1]))) {
-                // Operand, push to result stack
-                resultStack.push(token);
+    cout << "Before token loop" << endl;
+    while (mySStream >> token) {
+        cout << "Token: " << token << endl;
+
+        // Process each token separately
+        for (size_t i = 0; i < token.size(); ++i) {
+            char c = token[i];
+
+            if (isDigit(c) || c == '.') {
+                // Operand character, append to the current operand
+                resultStack.push(string(1, c));
             }
-            else if (isOperator(token[0])) {
-                // Operator
-                while (!operatorStack.empty() && isHigherPrecedence(operatorStack.top(), token[0])) {
+            else if (isOperator(c)) {
+                // Operator character, push to the result stack
+                while (!operatorStack.empty() && isHigherPrecedence(operatorStack.top(), c)) {
                     resultStack.push(string(1, operatorStack.top()));
                     operatorStack.pop();
                 }
-                operatorStack.push(token[0]);
+                operatorStack.push(c);
+
+                // Print the content of the operator stack for debugging
+                cout << "Operator Stack: ";
+                stack<char> tempStack = operatorStack;
+                while (!tempStack.empty()) {
+                    cout << tempStack.top() << " ";
+                    tempStack.pop();
+                }
+                cout << endl;
             }
-            else if (isOpeningBracket(token[0])) {
+            else if (isOpeningBracket(c)) {
                 // Opening bracket, push to operator stack
-                operatorStack.push(token[0]);
+                operatorStack.push(c);
             }
-            else if (isClosingBracket(token[0])) {
+            else if (isClosingBracket(c)) {
                 // Closing bracket, pop operators until matching opening bracket
                 while (!operatorStack.empty() && !isOpeningBracket(operatorStack.top())) {
                     resultStack.push(string(1, operatorStack.top()));
@@ -49,7 +64,7 @@ stack<string> RPNConverter::convertToRPN(const string& infixExpression) {
         resultStack.push(string(1, operatorStack.top()));
         operatorStack.pop();
     }
-
+    cout << "After token loop" << endl;
     return resultStack;
 }
 

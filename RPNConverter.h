@@ -4,13 +4,14 @@
 #include "SStream.h"
 #include "Stack.h"
 #include <string>
+#include <iostream>
 
 class RPNConverter {
 public:
     RPNConverter();
     ~RPNConverter();
 
-    stack<std::string> convertToRPN(const std::string& infixExpression);
+    stack<string> convertToRPN(const string& infixExpression);
 
 private:
     int getPrecedence(char op);
@@ -21,4 +22,3 @@ private:
     bool isHigherPrecedence(char op1, char op2);
 };
 #endif // RPNCONVERTER_H
-

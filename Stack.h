@@ -13,12 +13,13 @@ private:
 public:
 	stack(size_t initialCapacity = 1);
 	~stack();
-
 	void push(const T& value);
 	void pop();
 	T& top();
 	bool empty() const;
-	size_t getSize() const;
+	size_t getSize() const; 
+	/*stack<T>& operator=(stack<T>&& other) noexcept;
+	stack(const stack<T>& other);*/
 
 private:
 	void resize();
@@ -27,10 +28,12 @@ private:
 template <typename T>
 stack<T>::stack(size_t initialCapacity) : elements(new T[initialCapacity]), capacity(initialCapacity), size(0) {}
 
-template <typename T> stack<T>::~stack() {
-	delete[] elements;
+template <typename T>
+stack<T>::~stack() {
+	if (elements != nullptr) {
+		delete[] elements;
+	}
 }
-
 template <typename T> void stack<T>::push(const T& value) {
 	if (size == capacity) {
 		resize();
@@ -48,8 +51,7 @@ template <typename T> T& stack<T>::top() {
 	if (!empty()) {
 		return elements[size - 1];
 	}
-	/*throw out_of_range("Stack is empty");*/
-	/*cout << "Stack is empty"; */
+	throw std::out_of_range("Stack is empty");
 }
 
 template <typename T> bool stack<T>::empty() const {
@@ -78,6 +80,5 @@ template <typename T> void stack<T>::resize() {
 	elements = newElements;
 	capacity = newCapacity;
 }
-
 
 #endif // STACK_H
