@@ -16,7 +16,7 @@ void Calculator::run() {
             }
 
             // Convert to RPN using RPNConverter
-            stack<string> rpnStack = rpnConverter.convertToRPN(infixExpression);
+            SStack<string> rpnStack = rpnConverter.convertToRPN(infixExpression);
 
             // Print the RPN expression for debugging
             cout << "RPN Expression: ";
@@ -26,7 +26,7 @@ void Calculator::run() {
             }
             cout << endl;
 
-            // Set RPN stack in RPNEvaluator
+            // Set RPN SStack in RPNEvaluator
             rpnEvaluator.setRPNStack(rpnStack);
 
             // Evaluate and display the result

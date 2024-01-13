@@ -1,6 +1,6 @@
 #pragma once
 #ifndef RPNEVALUATOR_H
-#define RPNEVALUATOR_H 
+#define RPNEVALUATOR_H
 #include "SStream.h"
 #include "Stack.h"
 #include <cmath>
@@ -9,16 +9,20 @@
 class RPNEvaluator {
 public:
     RPNEvaluator();
-    RPNEvaluator(const stack<string>& rpnStack);
+    RPNEvaluator(const SStack<string>& rpnStack);
     ~RPNEvaluator();
 
     float evaluate();
 
-    // Method to set the RPN stack
-    void setRPNStack(const stack<string>& rpnStack);
+    // Method to set the RPN SStack
+    void setRPNStack(const SStack<string>& rpnStack);
+
+    bool isOperator(char c) const {
+        return c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '#';
+    }
 
 private:
-    stack<string> rpnStack;
+    SStack<string> rpnStack;
     bool isDigit(char c);
     // Helper method to perform binary operations
     float performOperation(float operand1, float operand2, char op);

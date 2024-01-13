@@ -11,7 +11,7 @@ public:
     RPNConverter();
     ~RPNConverter();
 
-    stack<string> convertToRPN(const string& infixExpression);
+    SStack<string> convertToRPN(const string& infixExpression);
 
 private:
     int getPrecedence(char op);

@@ -2,26 +2,28 @@
 
 RPNEvaluator::RPNEvaluator() {}
 
-RPNEvaluator::RPNEvaluator(const stack<std::string>& rpnStack) : rpnStack(rpnStack) {}
+RPNEvaluator::RPNEvaluator(const SStack<string>& rpnStack) : rpnStack(rpnStack) {}
 
 RPNEvaluator::~RPNEvaluator() {}
 
+
+
 float RPNEvaluator::evaluate() {
-    stack<float> resultStack;
+    SStack<float> resultStack;
 
     while (!rpnStack.empty()) {
-        std::string token = rpnStack.top();
+        string token = rpnStack.top();
         rpnStack.pop();
 
         if (isDigit(token[0]) || (token.size() > 1 && token[0] == '-' && isDigit(token[1]))) {
             // Operand, push to result stack
-            resultStack.push(stod(token));
+            resultStack.push(stof(token));
         }
-        else if (token.size() == 1 && (token[0] == '+' || token[0] == '-' || token[0] == '*' || token[0] == '/' || token[0] == '^' || token[0] == '#')) {
+        else if (isOperator(token[0])) {
             // Operator, perform operation
             if (resultStack.getSize() < 2) {
                 // Invalid RPN expression
-                throw runtime_error("Invalid RPN expression");
+                throw runtime_error("Need more operands");
             }
             float operand2 = resultStack.top();
             resultStack.pop();
@@ -44,10 +46,12 @@ float RPNEvaluator::evaluate() {
 
     return resultStack.top();
 }
+
 bool RPNEvaluator::isDigit(char c) {
     return '0' <= c && c <= '9';
 }
-void RPNEvaluator::setRPNStack(const stack<std::string>& rpnStack) {
+
+void RPNEvaluator::setRPNStack(const SStack<string>& rpnStack) {
     this->rpnStack = rpnStack;
 }
 
@@ -65,14 +69,6 @@ float RPNEvaluator::performOperation(float operand1, float operand2, char op) {
             throw runtime_error("Division by zero");
         }
         return operand1 / operand2;
-    case '^':
-        return pow(operand1, operand2);
-    case '#':
-        if (operand1 < 0) {
-            // Invalid square root of a negative number
-            throw runtime_error("Invalid square root of a negative number");
-        }
-        return sqrt(operand1);
     default:
         // Unknown operator
         throw runtime_error("Unknown operator");

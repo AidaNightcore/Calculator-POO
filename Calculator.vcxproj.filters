@@ -21,9 +21,6 @@
     <ClCompile Include="Stack.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="Stack.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="RPNConverter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
