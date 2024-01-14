@@ -27,20 +27,37 @@ private:
 
 inline MySStream::MySStream(const char* str) : data(str) {}
 
-inline MySStream& MySStream::operator>>(string& str) {
-    // Read characters until a space is encountered
-    while (*data != '\0' && *data != ' ' && *data != '\t' && *data != '\n') {
-        str += *data;
-        ++data;
-    }
+//inline MySStream& MySStream::operator>>(string& str) {
+//    // Read characters until a space is encountered
+//    while (*data != '\0' && *data != ' ' && *data != '\t' && *data != '\n') {
+//        str += *data;
+//        ++data;
+//    }
+//
+//    // Skip whitespace characters
+//    while (*data == ' ' || *data == '\t' || *data == '\n') {
+//        ++data;
+//    }
+//
+//    return *this;
+//}
 
-    // Skip whitespace characters
-    while (*data == ' ' || *data == '\t' || *data == '\n') {
+inline MySStream& MySStream::operator>>(string& str) {
+    // Read characters until the end of the string
+    while (*data != '\0') {
+        // Skip whitespace characters
+        if (*data == ' ' || *data == '\t' || *data == '\n') {
+            ++data;
+            break;
+        }
+
+        str += *data;
         ++data;
     }
 
     return *this;
 }
+
 
 inline MySStream& MySStream::operator>>(int& num) {
     // Read integer using the stoi function

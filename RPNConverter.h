@@ -20,5 +20,8 @@ private:
     bool isOpeningBracket(char c);
     bool isClosingBracket(char c);
     bool isHigherPrecedence(char op1, char op2);
+    bool isNumber(const string& token); 
+    void handleClosingBracket(string& currentNumber, SStack<string>& resultStack, SStack<char>& operatorStack); 
+    void handleOperator(string& currentNumber, SStack<string>& resultStack, SStack<char>& operatorStack, char op); 
 };
 #endif // RPNCONVERTER_H
