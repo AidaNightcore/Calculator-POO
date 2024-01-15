@@ -24,4 +24,4 @@ private:
     void handleClosingBracket(string& currentNumber, SStack<string>& resultStack, SStack<char>& operatorStack); 
     void handleOperator(string& currentNumber, SStack<string>& resultStack, SStack<char>& operatorStack, char op); 
 };
-#endif // RPNCONVERTER_H
+#endif 

@@ -3,43 +3,41 @@
 RPNConverter::RPNConverter() {}
 
 RPNConverter::~RPNConverter() {}
-SStack<std::string> RPNConverter::convertToRPN(const std::string& infixExpression) {
-    SStack<std::string> resultStack;
+SStack<string> RPNConverter::convertToRPN(const string& infixExpression) {
+    SStack<string> resultStack;
     SStack<char> operatorStack;
 
     MySStream mySStream(infixExpression.c_str());
 
-    std::string token, currentNumber;
-    while (mySStream >> token) {
-        if (isNumber(token) || (token.length() == 1 && isOperator(token[0]))) {
-            if (isNumber(token)) {
-                resultStack.push(token);
+    string token, currentNumber;
+    while (mySStream >> token || token!="") {
+        if (isNumber(token)) {
+            resultStack.push(token);
+        }
+        else if (token.length() == 1 && isOperator(token[0])) {
+            char currentOperator = token[0];
+            while (!operatorStack.empty() && isHigherPrecedence(operatorStack.top(), currentOperator) && !isOpeningBracket(operatorStack.top())) {
+                resultStack.push(string(1, operatorStack.top()));
+                operatorStack.pop();
             }
-            else {
-                // It's a single character operator
-                while (!operatorStack.empty() && isHigherPrecedence(operatorStack.top(), token[0]) && !isOpeningBracket(operatorStack.top())) {
-                    resultStack.push(std::string(1, operatorStack.top()));
-                    operatorStack.pop();
-                }
-                operatorStack.push(token[0]);
-            }
+            operatorStack.push(currentOperator);
         }
         else {
-            // Token is not a single character operator, handle each character
             for (char c : token) {
                 if (isDigit(c) || c == '.') {
                     currentNumber += c;
                 }
                 else if (isOperator(c)) {
+                    char currentOperator = c;
                     if (!currentNumber.empty()) {
                         resultStack.push(currentNumber);
                         currentNumber.clear();
                     }
-                    while (!operatorStack.empty() && isHigherPrecedence(operatorStack.top(), c) && !isOpeningBracket(operatorStack.top())) {
-                        resultStack.push(std::string(1, operatorStack.top()));
+                    while (!operatorStack.empty() && isHigherPrecedence(operatorStack.top(), currentOperator) && !isOpeningBracket(operatorStack.top())) {
+                        resultStack.push(string(1, operatorStack.top()));
                         operatorStack.pop();
                     }
-                    operatorStack.push(c);
+                    operatorStack.push(currentOperator);
                 }
                 else if (isOpeningBracket(c)) {
                     if (!currentNumber.empty()) {
@@ -54,16 +52,16 @@ SStack<std::string> RPNConverter::convertToRPN(const std::string& infixExpressio
                         currentNumber.clear();
                     }
                     while (!operatorStack.empty() && !isOpeningBracket(operatorStack.top())) {
-                        resultStack.push(std::string(1, operatorStack.top()));
+                        resultStack.push(string(1, operatorStack.top()));
                         operatorStack.pop();
                     }
                     if (operatorStack.empty() || !isOpeningBracket(operatorStack.top())) {
-                        throw std::runtime_error("Mismatched brackets");
+                        throw runtime_error("Mismatched brackets");
                     }
-                    operatorStack.pop(); // Pop the opening bracket
+                    operatorStack.pop(); 
                 }
                 else {
-                    throw std::runtime_error("Invalid character in the infix expression");
+                    throw runtime_error("Invalid character in the infix expression");
                 }
             }
             if (!currentNumber.empty()) {
@@ -71,18 +69,30 @@ SStack<std::string> RPNConverter::convertToRPN(const std::string& infixExpressio
                 currentNumber.clear();
             }
         }
+        token.clear();
     }
 
-    // Process the remaining operators in the stack
     while (!operatorStack.empty()) {
         if (isOpeningBracket(operatorStack.top())) {
-            throw std::runtime_error("Mismatched brackets");
+            throw runtime_error("Mismatched brackets");
         }
-        resultStack.push(std::string(1, operatorStack.top()));
+        resultStack.push(string(1, operatorStack.top()));
         operatorStack.pop();
     }
 
-    return resultStack;
+    if (resultStack.getSize() > 2 ) {
+        SStack<string> resultStackCopy;
+        
+        while (!resultStack.empty()) {
+            resultStackCopy.push(resultStack.top());
+            resultStack.pop(); 
+        }
+        resultStack = resultStackCopy; 
+        return resultStack;
+    }
+    else {
+        throw runtime_error("Invalid expression");
+    }
 }
 
 int RPNConverter::getPrecedence(char op) {
@@ -96,7 +106,7 @@ int RPNConverter::getPrecedence(char op) {
         return 3;
     }
     else {
-        return 0; // Assuming other operators have lower precedence
+        return 0; 
     }
 }
 
@@ -123,41 +133,43 @@ bool RPNConverter::isHigherPrecedence(char op1, char op2) {
         return false;
     }
     else {
-        // Equal precedence
+        
         if (op1 == '^' || op1 == '#') {
-            return false; // Right-associative operators
+            return false; 
         }
         else {
-            return true; // Left-associative operators
+            return true; 
         }
     }
 }
 
-bool RPNConverter::isNumber(const std::string& token) {
+bool RPNConverter::isNumber(const string& token) {
     size_t dotCount = 0;
+    bool hasDot = false;
 
     for (size_t i = 0; i < token.length(); ++i) {
         if (token[i] == '-') {
-            // Skip the negative sign at any position
+            
             if (i != 0) {
-                return false; // Invalid position for negative sign
+                return false; 
             }
         }
         else if (token[i] == '.') {
-            // Count the number of dots
             ++dotCount;
+            hasDot = true;
             if (dotCount > 1) {
-                // More than one dot is not allowed
-                return false;
+                throw runtime_error("Invalid expression");
             }
         }
         else if (!isDigit(token[i])) {
-            // Non-digit character found
             return false;
         }
     }
 
-    return true;
+    if (hasDot && token.back() == '.' || hasDot && token[0] == '.') {
+        throw runtime_error("Invalid expression");
+    }
+    else return true;
 }
 
 bool RPNConverter::isDigit(char c) {

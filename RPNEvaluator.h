@@ -12,9 +12,9 @@ public:
     RPNEvaluator(const SStack<string>& rpnStack);
     ~RPNEvaluator();
 
-    float evaluate();
+    double evaluate();
 
-    // Method to set the RPN SStack
+    
     void setRPNStack(const SStack<string>& rpnStack);
 
     bool isOperator(char c) const {
@@ -24,7 +24,7 @@ public:
 private:
     SStack<string> rpnStack;
     bool isDigit(char c);
-    // Helper method to perform binary operations
-    float performOperation(float operand1, float operand2, char op);
+    
+    double performOperation(double operand1, double operand2, char op);
 };
-#endif // RPNEVALUATOR_H
+#endif 

@@ -1,2 +1,7 @@
-﻿  RPNEvaluator.cpp
+﻿  Calculator.cpp
+  main.cpp
+  RPNConverter.cpp
+  RPNEvaluator.cpp
+  Stack.h
+  Generating Code...
   Calculator.vcxproj -> E:\Ase\POO\Calculator-POO\x64\Debug\Calculator.exe

@@ -18,8 +18,8 @@ public:
 	T& top();
 	bool empty() const;
 	size_t getSize() const; 
-	SStack(const SStack<T>& other);  // Copy constructor
-	SStack<T>& operator=(const SStack<T>& other);  // Copy assignment operator
+	SStack(const SStack<T>& other);  
+	SStack<T>& operator=(const SStack<T>& other);  
 	void print() const;
 
 private:
@@ -96,14 +96,13 @@ void SStack<T>::resize() {
 
 	T* newElements = new T[newCapacity];
 
-	// Copy existing elements
+	
 	for (size_t i = 0; i < size; ++i) {
 		newElements[i] = elements[i];
 	}
 
-	// Initialize the remaining elements in the new array
 	for (size_t i = size; i < newCapacity; ++i) {
-		newElements[i] = T();  // Default initialization
+		newElements[i] = T();  
 	}
 
 	delete[] elements;
@@ -123,4 +122,4 @@ void SStack<T>::print() const {
 
 
 
-#endif // STACK_H
+#endif 
